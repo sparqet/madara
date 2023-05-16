@@ -68,6 +68,12 @@
 <a href="#68" id="68">68</a>
 <a href="#69" id="69">69</a>
 <a href="#70" id="70">70</a>
+<a href="#71" id="71">71</a>
+<a href="#72" id="72">72</a>
+<a href="#73" id="73">73</a>
+<a href="#74" id="74">74</a>
+<a href="#75" id="75">75</a>
+<a href="#76" id="76">76</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Starknet RPC API trait and types
 //!
 //! Starkware maintains [a description of the Starknet API](https://github.com/starkware-libs/starknet-specs/blob/master/api/starknet_api_openrpc.json)
@@ -79,6 +85,8 @@
 
 <span class="kw">use </span>jsonrpsee::core::RpcResult;
 <span class="kw">use </span>jsonrpsee::proc_macros::rpc;
+<span class="kw">use </span>mp_starknet::transaction::types::Transaction;
+
 
 <span class="kw">pub mod </span>types;
 <span class="kw">pub mod </span>utils;
@@ -137,6 +145,10 @@
     <span class="doccomment">/// Get the chain id
     </span><span class="attr">#[method(name = <span class="string">&quot;chainId&quot;</span>)]
     </span><span class="kw">fn </span>get_chain_id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RpcResult&lt;String&gt;;
+
+    <span class="doccomment">/// Get the details of a transaction by a given block id and index
+    </span><span class="attr">#[method(name = <span class="string">&quot;getTransactionByBlockIdAndIndex&quot;</span>)]
+    </span><span class="kw">fn </span>get_transaction_by_block_id_and_index(<span class="kw-2">&amp;</span><span class="self">self</span>, block_id: BlockId, index: usize) -&gt; RpcResult&lt;Transaction&gt;;
 }
 </code></pre></div>
 </section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="mc_rpc_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (34e6673a0 2023-02-25)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
