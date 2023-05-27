@@ -602,6 +602,18 @@
 <a href="#602" id="602">602</a>
 <a href="#603" id="603">603</a>
 <a href="#604" id="604">604</a>
+<a href="#605" id="605">605</a>
+<a href="#606" id="606">606</a>
+<a href="#607" id="607">607</a>
+<a href="#608" id="608">608</a>
+<a href="#609" id="609">609</a>
+<a href="#610" id="610">610</a>
+<a href="#611" id="611">611</a>
+<a href="#612" id="612">612</a>
+<a href="#613" id="613">613</a>
+<a href="#614" id="614">614</a>
+<a href="#615" id="615">615</a>
+<a href="#616" id="616">616</a>
 </pre><pre class="rust"><code><span class="kw">use </span>alloc::collections::BTreeMap;
 <span class="kw">use </span>alloc::string::String;
 
@@ -615,7 +627,7 @@
 <span class="kw">use </span>starknet_api::transaction::Fee;
 <span class="kw">use </span>starknet_api::StarknetApiError;
 <span class="attr">#[cfg(feature = <span class="string">&quot;std&quot;</span>)]
-</span><span class="kw">use </span>starknet_providers::jsonrpc::models::{
+</span><span class="kw">use </span>starknet_core::types::{
     DeclareTransaction <span class="kw">as </span>RPCDeclareTransaction, DeclareTransactionV1 <span class="kw">as </span>RPCDeclareTransactionV1,
     DeclareTransactionV2 <span class="kw">as </span>RPCDeclareTransactionV2, DeployAccountTransaction <span class="kw">as </span>RPCDeployAccountTransaction,
     InvokeTransaction <span class="kw">as </span>RPCInvokeTransaction, InvokeTransactionV0 <span class="kw">as </span>RPCInvokeTransactionV0,
@@ -763,11 +775,11 @@
     <span class="doccomment">/// Contract to declare.
     </span><span class="kw">pub </span>contract_class: ContractClassWrapper,
     <span class="doccomment">/// Account contract nonce.
-    </span><span class="kw">pub </span>nonce: U256,
+    </span><span class="kw">pub </span>nonce: Felt252Wrapper,
     <span class="doccomment">/// Transaction signature.
     </span><span class="kw">pub </span>signature: BoundedVec&lt;Felt252Wrapper, MaxArraySize&gt;,
     <span class="doccomment">/// Max fee.
-    </span><span class="kw">pub </span>max_fee: U256,
+    </span><span class="kw">pub </span>max_fee: Felt252Wrapper,
 }
 
 <span class="doccomment">/// Deploy account transaction.
@@ -791,7 +803,7 @@
     <span class="doccomment">/// Transaction calldata.
     </span><span class="kw">pub </span>calldata: BoundedVec&lt;Felt252Wrapper, MaxCalldataSize&gt;,
     <span class="doccomment">/// Account contract nonce.
-    </span><span class="kw">pub </span>nonce: U256,
+    </span><span class="kw">pub </span>nonce: Felt252Wrapper,
     <span class="doccomment">/// Transaction salt.
     </span><span class="kw">pub </span>salt: U256,
     <span class="doccomment">/// Transaction signature.
@@ -799,7 +811,7 @@
     <span class="doccomment">/// Account class hash.
     </span><span class="kw">pub </span>account_class_hash: Felt252Wrapper,
     <span class="doccomment">/// Max fee.
-    </span><span class="kw">pub </span>max_fee: U256,
+    </span><span class="kw">pub </span>max_fee: Felt252Wrapper,
 }
 
 <span class="doccomment">/// Error of conversion between [DeclareTransaction], [InvokeTransaction],
@@ -850,11 +862,11 @@
     <span class="doccomment">/// Transaction calldata.
     </span><span class="kw">pub </span>calldata: BoundedVec&lt;Felt252Wrapper, MaxCalldataSize&gt;,
     <span class="doccomment">/// Account contract nonce.
-    </span><span class="kw">pub </span>nonce: U256,
+    </span><span class="kw">pub </span>nonce: Felt252Wrapper,
     <span class="doccomment">/// Transaction signature.
     </span><span class="kw">pub </span>signature: BoundedVec&lt;Felt252Wrapper, MaxArraySize&gt;,
     <span class="doccomment">/// Max fee.
-    </span><span class="kw">pub </span>max_fee: U256,
+    </span><span class="kw">pub </span>max_fee: Felt252Wrapper,
 }
 
 <span class="kw">impl </span>From&lt;Transaction&gt; <span class="kw">for </span>InvokeTransaction {
@@ -894,7 +906,7 @@
     <span class="doccomment">/// Sender Address
     </span><span class="kw">pub </span>sender_address: ContractAddressWrapper,
     <span class="doccomment">/// Nonce
-    </span><span class="kw">pub </span>nonce: U256,
+    </span><span class="kw">pub </span>nonce: Felt252Wrapper,
     <span class="doccomment">/// Call entrypoint
     </span><span class="kw">pub </span>call_entrypoint: CallEntryPointWrapper,
     <span class="doccomment">/// Contract Class
@@ -902,7 +914,7 @@
     <span class="doccomment">/// Contract Address Salt
     </span><span class="kw">pub </span>contract_address_salt: <span class="prelude-ty">Option</span>&lt;U256&gt;,
     <span class="doccomment">/// Max fee.
-    </span><span class="kw">pub </span>max_fee: U256,
+    </span><span class="kw">pub </span>max_fee: Felt252Wrapper,
 }
 
 <span class="kw">impl </span>TryFrom&lt;Transaction&gt; <span class="kw">for </span>DeployAccountTransaction {
@@ -1008,6 +1020,8 @@
     </span>InvalidCharacter,
     <span class="doccomment">/// Value is too large for FieldElement (felt252).
     </span>OutOfRange,
+    <span class="doccomment">/// Value is too large to fit into target type.
+    </span>ValueTooLarge,
 }
 
 <span class="attr">#[cfg(feature = <span class="string">&quot;std&quot;</span>)]
@@ -1018,6 +1032,7 @@
             Felt252WrapperError::InvalidLength =&gt; <span class="self">Self</span>::InvalidLength,
             Felt252WrapperError::InvalidCharacter =&gt; <span class="self">Self</span>::InvalidCharacter,
             Felt252WrapperError::OutOfRange =&gt; <span class="self">Self</span>::OutOfRange,
+            Felt252WrapperError::ValueTooLarge =&gt; <span class="self">Self</span>::ValueTooLarge,
         }
     }
 }
@@ -1027,9 +1042,9 @@
     <span class="kw">type </span>Error = RPCTransactionConversionError;
     <span class="kw">fn </span>try_from(value: Transaction) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
         <span class="kw">let </span>transaction_hash = value.hash.<span class="number">0</span>;
-        <span class="kw">let </span>max_fee = Felt252Wrapper::try_from(value.max_fee)<span class="question-mark">?</span>.<span class="number">0</span>;
+        <span class="kw">let </span>max_fee = value.max_fee.<span class="number">0</span>;
         <span class="kw">let </span>signature = value.signature.iter().map(|<span class="kw-2">&amp;</span>f| f.<span class="number">0</span>).collect();
-        <span class="kw">let </span>nonce = Felt252Wrapper::try_from(value.nonce)<span class="question-mark">?</span>.<span class="number">0</span>;
+        <span class="kw">let </span>nonce = value.nonce.<span class="number">0</span>;
         <span class="kw">let </span>sender_address = value.sender_address.<span class="number">0</span>;
         <span class="kw">let </span>class_hash = value.call_entrypoint.class_hash.ok_or(RPCTransactionConversionError::MissingInformation);
         <span class="kw">let </span>contract_address = value.call_entrypoint.storage_address.<span class="number">0</span>;
@@ -1040,12 +1055,22 @@
         <span class="kw">match </span>value.tx_type {
             TxType::Declare =&gt; {
                 <span class="kw">let </span>class_hash = class_hash<span class="question-mark">?</span>.<span class="number">0</span>;
-                <span class="kw">let </span>declare_txn_v1 =
-                    RPCDeclareTransactionV1 { transaction_hash, max_fee, signature, nonce, class_hash, sender_address };
                 <span class="kw">match </span>value.version {
-                    <span class="number">1 </span>=&gt; <span class="prelude-val">Ok</span>(RPCTransaction::Declare(RPCDeclareTransaction::V1(declare_txn_v1))),
+                    <span class="number">1 </span>=&gt; <span class="prelude-val">Ok</span>(RPCTransaction::Declare(RPCDeclareTransaction::V1(RPCDeclareTransactionV1 {
+                        transaction_hash,
+                        max_fee,
+                        signature,
+                        nonce,
+                        class_hash,
+                        sender_address,
+                    }))),
                     <span class="number">2 </span>=&gt; <span class="prelude-val">Ok</span>(RPCTransaction::Declare(RPCDeclareTransaction::V2(RPCDeclareTransactionV2 {
-                        declare_txn_v1,
+                        transaction_hash,
+                        max_fee,
+                        signature,
+                        nonce,
+                        class_hash,
+                        sender_address,
                         compiled_class_hash: class_hash,
                     }))),
                     <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(RPCTransactionConversionError::UnknownVersion),
@@ -1074,7 +1099,6 @@
             TxType::DeployAccount =&gt; <span class="prelude-val">Ok</span>(RPCTransaction::DeployAccount(RPCDeployAccountTransaction {
                 transaction_hash,
                 max_fee,
-                version: value.version.into(),
                 signature,
                 nonce,
                 contract_address_salt: Felt252Wrapper::try_from(
@@ -1085,7 +1109,7 @@
                 class_hash: class_hash<span class="question-mark">?</span>.<span class="number">0</span>,
             })),
             TxType::L1Handler =&gt; {
-                <span class="kw">let </span>nonce = value.nonce.as_u64(); <span class="comment">// this panics in case of overflow
+                <span class="kw">let </span>nonce = TryInto::try_into(value.nonce).unwrap(); <span class="comment">// this panics in case of overflow
                 </span><span class="prelude-val">Ok</span>(RPCTransaction::L1Handler(RPCL1HandlerTransaction {
                     transaction_hash,
                     version: value.version.into(),
